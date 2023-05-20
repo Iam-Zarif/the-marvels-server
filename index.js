@@ -63,6 +63,12 @@ app.get("/myToys/:id" ,async(req,res) =>{
   const result = await ToysCollection.findOne(query);
   res.send(result)
 });
+app.get('/allToys/:id' ,async(req,res) =>{
+  const id = req.params.id;
+  const query = { _id: new ObjectId(id) };
+  const result = await ToysCollection.findOne(query);
+  res.send(result);
+})
 app.delete("/myToys/:id" , async(req,res) =>{
   const id= req.params.id;
   const query ={_id : new ObjectId(id)};
