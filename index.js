@@ -24,7 +24,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
     const ToysCollection = client.db("ToyDB").collection("Toys");
     app.get("/data/:text", async (req, res) => {
       if (
@@ -63,12 +63,18 @@ app.get("/myToys/:id" ,async(req,res) =>{
   const result = await ToysCollection.findOne(query);
   res.send(result)
 });
+
+
 app.get('/allToys/:id' ,async(req,res) =>{
   const id = req.params.id;
   const query = { _id: new ObjectId(id) };
   const result = await ToysCollection.findOne(query);
   res.send(result);
 })
+
+
+
+
 app.delete("/myToys/:id" , async(req,res) =>{
   const id= req.params.id;
   const query ={_id : new ObjectId(id)};
