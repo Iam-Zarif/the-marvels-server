@@ -39,70 +39,66 @@ async function run() {
       }
     });
 
+    app.get("/allToys", async (req, res) => {
+      const user = await ToysCollection.find().toArray();
+      res.send(user);
+    });
 
-    app.get("/allToys", async(req, res) => {
+    app.get("/myToys", async (req, res) => {
+      let query = {};
+      if (req.query?.email) {
+        query = { email: req.query.email };
+      }
+      const result = await ToysCollection.find(query).toArray();
+      res.send(result);
+    });
+    app.get("/myToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await ToysCollection.findOne(query);
+      res.send(result);
+    });
 
-        const user = await ToysCollection.find().toArray();
-        res.send(user)
-    })
+    app.put("/allToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const user = req.body;
+      const options = { upsert: true };
+      const updatedUser = {
+        $set: {
+          price: user.price,
+          quantity: user.quantity,
+          description: user.description,
+        },
+      };
+      const result = await ToysCollection.updateOne(
+        filter,
+        updatedUser,
+        options
+      );
+      res.send(result);
+    });
 
+    app.get("/allToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await ToysCollection.findOne(query);
+      res.send(result);
+    });
 
-
-
-app.get('/myToys' ,async(req,res) =>{
-    let query = {}
-    if(req.query?.email){
-        query = {email : req.query.email}
-    }
-    const result = await ToysCollection.find(query).toArray();
-    res.send(result);
-})
-app.get("/myToys/:id" ,async(req,res) =>{
-  const id = req.params.id;
-  const query ={_id :new ObjectId(id)}
-  const result = await ToysCollection.findOne(query);
-  res.send(result)
-});
- 
-app.put("/allToys/:id", async(req,res) =>{
-  const id = req.params.id;
-  const filter = {_id : new ObjectId(id)};
-  const user = req.body;
-  const options = {upsert:true};
-  const updatedUser = {
-    $set: {
-      price: user.price,
-      quantity: user.quantity,
-      description: user.description,
-    },
-  };
-  const result = await ToysCollection.updateOne(filter,updatedUser,options);
-  res.send(result)
-});
-
-app.get('/allToys/:id' ,async(req,res) =>{
-  const id = req.params.id;
-  const query = { _id: new ObjectId(id) };
-  const result = await ToysCollection.findOne(query);
-  res.send(result);
-})
-
-
-
-
-app.delete("/myToys/:id" , async(req,res) =>{
-  const id= req.params.id;
-  const query ={_id : new ObjectId(id)};
-  const result = await ToysCollection.deleteOne(query);
-  res.send(result)
-});
+    app.delete("/myToys/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const result = await ToysCollection.deleteOne(query);
+      res.send(result);
+    });
     app.post("/toys", async (req, res) => {
       const newToys = req.body;
       console.log(newToys);
       const result = await ToysCollection.insertOne(newToys);
-      res.send(result); // Send the inserted document as the response
+      res.send(result);
     });
-
+    // Send the inserted document as the response
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log(
@@ -119,3 +115,4 @@ app.get("/", (req, res) => {
 app.listen(port, () => {
   console.log(`Toys are walking on port : ${port}`);
 });
+  // Send a ping to confirm a successful connection
