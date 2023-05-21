@@ -105,6 +105,7 @@ async function run() {
       "Pinged your deployment. You successfully connected to MongoDB!"
     );
   } finally {
+    // client.connect commented
   }
 }
 run().catch(console.dir);
