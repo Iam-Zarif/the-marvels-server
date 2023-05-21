@@ -63,7 +63,22 @@ app.get("/myToys/:id" ,async(req,res) =>{
   const result = await ToysCollection.findOne(query);
   res.send(result)
 });
-
+ 
+app.put("/allToys/:id", async(req,res) =>{
+  const id = req.params.id;
+  const filter = {_id : new ObjectId(id)};
+  const user = req.body;
+  const options = {upsert:true};
+  const updatedUser = {
+    $set: {
+      price: user.price,
+      quantity: user.quantity,
+      description: user.description,
+    },
+  };
+  const result = await ToysCollection.updateOne(filter,updatedUser,options);
+  res.send(result)
+});
 
 app.get('/allToys/:id' ,async(req,res) =>{
   const id = req.params.id;
